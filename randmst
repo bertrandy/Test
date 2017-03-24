@@ -1,0 +1,7 @@
+#!/bin/sh
+numpoints="$2"
+numtrials="$3"
+dimension="$4"
+javac Heap.java
+javac Graph.java
+java Graph 0 $numpoints $numtrials $dimension

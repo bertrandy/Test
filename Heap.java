@@ -1,0 +1,188 @@
+/*
+ * Heap.java
+ * Huid: 21240443 41240032
+ * CS124
+ * Feb/26/2017
+ */
+
+/*
+ * Node class
+ * Node is the class that represent the elements in heap
+ */
+class Node{
+	// the key of node
+    private float key;
+    
+	// the value of node
+    private int value;
+    
+    // constructor
+    public Node(float k, int v){
+        key = k;
+        value = v;
+    }
+    
+    //get key
+    public float getKey(){
+    	return key;
+    }
+    
+    // get value
+    public int getvalue(){
+    	return value;
+    }
+    
+    // set key
+    public void setKey(float k){
+    	key=k;
+    }
+    
+    // toString
+    public String toString(){
+    	String s = "key:"+key+", value:"+value;
+    	return s;
+    }
+}
+
+/*
+ * Heap class
+ * Heap class is a min heap class
+ */
+public class Heap {
+    
+	// heap array
+    private Node[] heap;
+    
+    // element index array
+    private int[] index;
+    
+    // heap size
+    private int size;       
+       
+    // constructor
+    public Heap(int num ){
+        heap = new Node[num+1];
+        index = new int[num];
+        size = 0; // not including the first empty element.
+    }
+    
+    // get size
+    public int getSize(){
+        return size;
+    }
+    
+    // peek the first element
+    public Node peek(){
+        return heap[1];
+    }
+    
+    // extract min element and return its value
+    public int extractMin(){
+        Node min = heap[1];                
+        heap[1] = heap[size];
+        index[min.getvalue()] = -1;     
+        index[heap[1].getvalue()] = 1;        
+        heap[size] = null;               
+        size -= 1;
+        minHeapify(1);  
+        return min.getvalue();
+    }
+    
+    // min heapify the heap
+    public void minHeapify(int n){
+        if(heap[n]!=null){
+            int l = n*2;
+            int r = n*2+1;
+            int smallest = n;
+            if(heap.length > l && heap[l]!= null && heap[l].getKey() < heap[n].getKey()){
+                smallest = l;
+            }else{
+                smallest = n;
+            }
+            if(heap.length > r && heap[r]!= null && heap[r].getKey() < heap[smallest].getKey()){
+                smallest = r;
+            }
+            if(smallest != n){
+                swap(n, smallest);
+                minHeapify(smallest);
+            }
+        }  
+    }
+    
+    // sway the two elements with given index in heap
+    public void swap(int i, int j){
+        Node temp = heap[i]; 
+        
+        heap[i] = heap[j]; 
+        index[heap[i].getvalue()] = i;   
+        
+        heap[j] = temp;
+        index[heap[j].getvalue()] = j;                         
+    }
+    
+    // insert a new node into heap, or replace a existing one's value with given value 
+    public void insert(float key, int value){
+        int n;
+        if(heap[index[value]] == null){
+            Node v = new Node(key, value);
+            size ++;
+            heap[size] = v;
+            n = size;
+            index[value] = size;
+            
+        }else{
+        	heap[index[value]].setKey(key);
+            n = index[value];     
+        }
+        
+        while(n!=1 && heap[n/2].getKey() > heap[n].getKey()){
+            swap(n, n/2);
+            n = n/2;
+        }
+    }
+    
+    // to String
+    public String toString(){
+        String s;
+        if(size != 0){
+            s = "size: " + size + "  ";
+            for(int i = 1; i < size+1; i++){
+                s+="("+heap[i].getvalue()+": "+heap[i].getKey()+") ";
+            }
+        }else{
+            s = "empty heap";
+        }
+        return s;
+    }
+
+    public static void main(String[] args){
+    	// test code
+        int x = 10;
+        Heap myheap = new Heap(x);
+        for(int i = x; i > 0; i--){
+            myheap.insert(i,i);
+        }
+        System.out.println(myheap);
+        System.out.println("extractMin:");
+        System.out.println(myheap.extractMin());
+        System.out.println("current heap:");
+        System.out.println(myheap);
+        System.out.println("insert (7,2), current heap:");
+        myheap.insert(7,2);
+        System.out.println(myheap);
+        System.out.println("insert (10,1), current heap:");
+        myheap.insert(10,1);
+        System.out.println(myheap);
+        System.out.println("insert (2,2), current heap:");
+        myheap.insert(2,2);
+        System.out.println(myheap);
+        System.out.println("extractMin:");
+        System.out.println(myheap.extractMin());
+        System.out.println("current heap:");
+        System.out.println(myheap);
+        
+    }
+
+    
+    
+}
